@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetWorld - Animalerie Africano</title>
+
+  <!-- CSS LEAFLET (Carte Sfax) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- CSS PROPRIO -->
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+
+  <!-- ==================== WELCOME PAGE ==================== -->
+  <div id="welcomePage" class="page welcome-container">
+    <div class="welcome-box">
+      <span class="logo-icon">🐾</span>
+      <h1>Bienvenue chez PetWorld Animalerie africaino</h1>
+      <p>Découvrez une expérience unique pour le bien-être de vos animaux et le bonheur de votre foyer.</p>
+
+      <div class="welcome-badges">
+        <span>Livraison Sfax & Tunisie</span>
+        <span>Qualité Africaino</span>
+        <span>Conseils Experts</span>
+      </div>
+
+      <button class="btn btn-primary btn-large btn-full" onclick="goToShop()">
+        Accéder à la boutique 🛒
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ==================== MAIN PAGE (SHOP) ==================== -->
+  <div id="mainPage" class="page hidden">
+
+    <!-- MAIN NAVBAR -->
+    <header class="navbar">
+
+      <div class="brand" onclick="goHome()">
+        <span class="brand-name">
+          PetWorld <small class="brand-tag">Animalerie africaino</small>
+        </span>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <div class="search-container">
+        <input
+          type="text"
+          id="search"
+          placeholder="Rechercher un produit, chien, chat..."
+          oninput="searchProduct()"
+        >
+        <ul id="suggestions" class="suggestions-list"></ul>
+      </div>
+
+      <!-- AUTH & CART AREA -->
+      <div class="auth-area">
+
+        <button class="btn btn-outline" onclick="openAboutModal()">
+          À Propos
+        </button>
+
+        <div id="auth-section" style="display: flex; gap: 8px; align-items: center;">
+          <!-- JS populate : Sign In / Log In / User Profile -->
+        </div>
+
+        <!-- FAVORITES -->
+        <div class="favorite-trigger" onclick="openFavoritesPage()">
+          ❤️
+          <span id="favorite-count" class="favorite-badge">0</span>
+        </div>
+
+        <!-- CART -->
+        <div class="cart-trigger" onclick="openCartPage()">
+          🛒
+          <span id="cart-count" class="cart-badge">0</span>
+        </div>
+
+      </div>
+    </header>
+
+
+    <!-- CATEGORIES CATEGORY BAR -->
+    <nav class="category-nav">
+      <div class="category-container">
+
+        <a class="nav-item active" onclick="showHomeSection()">
+          🏠 Accueil
+        </a>
+
+        <!-- DROPDOWN CHIENS -->
+        <div class="dropdown">
+          <a class="nav-item" onclick="showDogSection()">
+            🐶 Chiens <span class="arrow">▾</span>
+          </a>
+
+          <div class="dropdown-menu">
+            <a onclick="scrollToSection('chiens-accessoires')">
+              📦 Produits & Accessoires Chiens
+            </a>
+
+            <a onclick="scrollToSection('chiens-chiots')">
+              🐕 Vente & Adoptions Chiens
+            </a>
+          </div>
+        </div>
+
+
+        <!-- DROPDOWN CHATS -->
+        <div class="dropdown">
+          <a class="nav-item" onclick="showCatSection()">
+            🐱 Chats <span class="arrow">▾</span>
+          </a>
+
+          <div class="dropdown-menu">
+            <a onclick="scrollToSection('chats-accessoires')">
+              📦 Produits & Accessoires Chats
+            </a>
+
+            <a onclick="scrollToSection('chats-chatons')">
+              🐈 Vente & Adoptions Chats
+            </a>
+          </div>
+        </div>
+
+
+        <!-- DROPDOWN OISEAUX -->
+        <div class="dropdown">
+          <a class="nav-item" onclick="showBirdSection()">
+            🕊️ Oiseaux <span class="arrow">▾</span>
+          </a>
+
+          <div class="dropdown-menu">
+            <a onclick="scrollToSection('oiseaux-accessoires')">
+              📦 Produits & Cages Oiseaux
+            </a>
+
+            <a onclick="scrollToSection('oiseaux-especes')">
+              🦜 Oiseaux Disponibles
+            </a>
+          </div>
+        </div>
+
+
+        <!-- DROPDOWN POISSONS -->
+        <div class="dropdown">
+          <a class="nav-item" onclick="showFishSection()">
+            🐟 Poissons <span class="arrow">▾</span>
+          </a>
+
+          <div class="dropdown-menu">
+            <a onclick="scrollToSection('poissons-accessoires')">
+              📦 Produits & Aquariums
+            </a>
+
+            <a onclick="scrollToSection('poissons-especes')">
+              🐠 Poissons Disponibles
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+
+
+    <!-- MAIN CONTAINER -->
+    <main class="main-content">
+
+      <!-- ==================== SECTION ACCUEIL (HOME) ==================== -->
+      <div id="home-section" class="section-container">
+
+        <!-- BANNER NOTE -->
+        <section class="banner-note">
+          <p>
+            📌 <b>Africano Express :</b>
+            Sélectionnez vos produits et passez votre commande directement pour une livraison
+            rapide à domicile partout à Sfax.
+          </p>
+        </section>
+
+
+        <div class="bento-card bento-big africano-hero-card">
+          <div class="hero-image-container">
+            <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=800" alt="Africano Hero">
+
+            <!-- El Texte (Titre w Paragraphe) fi west el teswira -->
+            <div class="hero-center-content">
+              <h2>Grandir Avec Un Animal : Le Plus Beau Cadeau Pour Votre Enfant 👶🐾</h2>
+              <p>
+                Chez <b>Animalerie Africano</b>, nous croyons qu'élever un enfant aux côtés
+                d'un compagnon à quatre pattes ou à plumes lui apprend la responsabilité,
+                l'empathie et un amour inconditionnel. Nos animaux sont élevés dans un cadre
+                familial, aimant et sécurisé.
+              </p>
+            </div>
+
+            <!-- Boutons louta da5el el teswira (Découvrir 3al ysar, En savoir plus 3al ymin) -->
+            <div class="hero-bottom-actions">
+              <button class="btn btn-outline btn-decouvrir" onclick="showCatalog()">Découvrir</button>
+              <button class="btn btn-primary btn-en-savoir" onclick="openAboutModal()">En savoir plus sur Africano</button>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- WHY AFRICANO FEATURE GRID -->
+        <div class="africano-features">
+
+          <div class="feature-card">
+            <div class="feature-icon">🏡</div>
+
+            <h3>Élevage Familial & Sain</h3>
+
+            <p>
+              Nos chiens et chats grandissent au contact des enfants,
+              garantissant des animaux équilibrés, sociables et très affectueux.
+            </p>
+          </div>
+
+
+          <div class="feature-card">
+            <div class="feature-icon">🩺</div>
+
+            <h3>Suivi Vétérinaire Rigoureux</h3>
+
+            <p>
+              Tous nos animaux sont vaccinés, vermifugés et examinés régulièrement
+              pour vous offrir un compagnon en parfaite santé.
+            </p>
+          </div>
+
+
+          <div class="feature-card">
+            <div class="feature-icon">⭐</div>
+
+            <h3>Produits & Nourriture Premium</h3>
+
+            <p>
+              Nous sélectionnons rigoureusement la meilleure alimentation
+              et les accessoires les plus durables pour le bonheur de votre animal.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================== SECTION CHIENS ==================== -->
+      <div id="chiens-section" class="section-container hidden">
+
+        <section id="chiens-accessoires" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Chiens - Produits & Accessoires</h2>
+            <p>Croquettes, jouets et équipements sélection Africano</p>
+          </div>
+          <div id="products-dogs" class="products-grid"></div>
+        </section>
+
+        <section id="chiens-chiots" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Chiens & Chiots Disponibles</h2>
+            <p>Élevés avec amour et prêts à rejoindre votre famille</p>
+          </div>
+          <div id="pets-dogs" class="products-grid"></div>
+        </section>
+
+      </div>
+
+
+      <!-- ==================== SECTION CHATS ==================== -->
+      <div id="chats-section" class="section-container hidden">
+
+        <section id="chats-accessoires" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Chats - Produits & Accessoires</h2>
+            <p>Arbres à chat, litières, alimentation et soins de qualité</p>
+          </div>
+          <div id="products-cats" class="products-grid"></div>
+        </section>
+
+        <section id="chats-chatons" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Chats & Chatons Disponibles</h2>
+            <p>Nos adorables boules de poils en parfaite santé</p>
+          </div>
+          <div id="pets-cats" class="products-grid"></div>
+        </section>
+
+      </div>
+
+
+      <!-- ==================== SECTION OISEAUX ==================== -->
+      <div id="oiseaux-section" class="section-container hidden">
+
+        <section id="oiseaux-accessoires" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Oiseaux - Produits & Cages</h2>
+            <p>Graines riches, cages spacieuses et accessoires</p>
+          </div>
+          <div id="products-birds" class="products-grid"></div>
+        </section>
+
+        <section id="oiseaux-especes" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Oiseaux & Perroquets Disponibles</h2>
+            <p>Espèces exotiques et canaris aux beaux chants</p>
+          </div>
+          <div id="pets-birds" class="products-grid"></div>
+        </section>
+
+      </div>
+
+
+      <!-- ==================== SECTION POISSONS ==================== -->
+      <div id="poissons-section" class="section-container hidden">
+
+        <section id="poissons-accessoires" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Poissons - Aquariums & Alimentation</h2>
+            <p>Aquariums modernes, filtres et nourriture premium</p>
+          </div>
+          <div id="products-fishes" class="products-grid"></div>
+        </section>
+
+        <section id="poissons-especes" class="catalog-section">
+          <div class="section-title title-green">
+            <h2>Poissons d'Aquarium Disponibles</h2>
+            <p>Poissons rouges, Bettas magnifiques et espèces d'eau douce</p>
+          </div>
+          <div id="pets-fishes" class="products-grid"></div>
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ==================== FAVORITES PAGE ==================== -->
+  <div id="favoritesPage" class="page hidden">
+    <div class="container">
+      <button class="btn btn-back" onclick="goHome()" style="margin-top: 20px;">
+        ← Retour à la boutique
+      </button>
+      <h2 class="page-header-title">❤️ Mes Favoris</h2>
+      <div id="favoriteProducts" class="products-grid"></div>
+    </div>
+  </div>
+
+
+  <!-- ==================== FLOATING FEEDBACK BUTTON ==================== -->
+  <button class="floating-feedback-btn" onclick="openFeedbackModal()">
+    💬 Proposer / Avis ⭐
+  </button>
+
+
+  <!-- ==================== DETAILS PAGE ==================== -->
+  <div id="detailsPage" class="page hidden">
+    <div class="container">
+      <button class="btn btn-back" onclick="goHome()" style="margin-top: 20px;">
+        ← Retour à la boutique
+      </button>
+
+      <div class="details-card">
+        <div class="details-img-wrapper">
+          <img id="detail-img" src="" alt="" style="width:100%; border-radius:12px;">
+        </div>
+        <div class="details-info">
+          <h2 id="detail-name"></h2>
+          <p id="detail-desc" class="desc"></p>
+          <div id="detail-price" class="price-tag"></div>
+          <button class="btn btn-primary btn-large" onclick="addToCartFromDetails()">
+            Ajouter au Panier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== CART PAGE ==================== -->
+  <div id="cartPage" class="page hidden">
+    <div class="container">
+      <button class="btn btn-back" onclick="goHome()" style="margin-top: 20px;">
+        ← Continuer mes achats
+      </button>
+
+      <h2 class="page-header-title">Votre Panier</h2>
+
+      <div id="cart-controls" class="cart-controls hidden">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+          <input
+            type="checkbox"
+            id="selectAll"
+            onchange="toggleSelectAll(this)"
+            style="accent-color: var(--accent); width: 18px; height: 18px;"
+          >
+          <b>Tout sélectionner</b>
+        </label>
+        <div id="cart-total-price" class="cart-total">Total: 0 DT</div>
+      </div>
+
+      <div id="cartProducts" class="products-grid"></div>
+
+      <div id="cart-action-area" class="hidden" style="text-align: center; margin-top: 30px;">
+        <button
+          id="orderBtn"
+          class="btn btn-primary btn-large"
+          onclick="openCheckoutModal()"
+        >
+          Commander la sélection
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL ABOUT ==================== -->
+  <div id="aboutModal" class="modal hidden">
+    <div class="modal-content about-modal-box">
+      <span class="close-btn" onclick="closeAboutModal()">&times;</span>
+      <h2>À Propos de PetWorld Africano 🐾</h2>
+      <p class="about-desc">
+        PetWorld Africano est la destination de référence à Sfax pour la vente
+        d'animaux élevés dans les meilleures conditions et de produits haut de
+        gamme pour leur santé et leur épanouissement.
+      </p>
+      <div class="info-grid-vertical">
+        <div class="info-item">📍 <b>Adresse :</b> Sfax, Tunisie</div>
+        <div class="info-item">📞 <b>Téléphone :</b> +216 20 000 000</div>
+        <div class="info-item">⏰ <b>Horaires :</b> Lundi - Samedi : 09h00 - 19h00</div>
+      </div>
+      <div class="modal-socials">
+        <a href="#" class="social-btn fb">Facebook</a>
+        <a href="#" class="social-btn ig">Instagram</a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL AUTH ==================== -->
+  <div id="authModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeAuthModal()">&times;</span>
+      <h2 id="authModalTitle" style="margin-bottom: 20px; text-align: center; color: var(--accent);">Connexion</h2>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="form-group">
+          <label>Adresse E-mail</label>
+          <input type="email" id="authEmail" required placeholder="exemple@email.com">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top: 10px;">Valider</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL EDIT PRODUCT (ADMIN FEDY) ==================== -->
+  <div id="editProductModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 450px;">
+      <span class="close-btn" onclick="closeEditModal()">&times;</span>
+      <h2 style="margin-bottom: 15px; color: var(--accent); text-align: center;">Modifier le Produit 🛠️</h2>
+
+      <form id="editProductForm" onsubmit="saveProductChanges(event)">
+        <input type="hidden" id="editProductId">
+
+        <div class="form-group">
+          <label>Nom du produit</label>
+          <input type="text" id="editProductName" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);">
+        </div>
+
+        <div class="form-group">
+          <label>Prix (ex: 45 ou "***")</label>
+          <input type="text" id="editProductPrice" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);">
+        </div>
+
+        <div class="form-group">
+          <label>Lien de l'image (URL)</label>
+          <input type="url" id="editProductImg" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);">
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="editProductDesc" rows="3" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-large" style="margin-top: 10px;">
+          Enregistrer les modifications 💾
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL CHECKOUT & MAP ==================== -->
+  <div id="checkoutModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 500px;">
+      <span class="close-btn" onclick="closeCheckoutModal()">&times;</span>
+      <h2 style="margin-bottom: 15px; color: var(--accent);">Finaliser la commande</h2>
+
+      <form id="checkoutForm" onsubmit="prepareOrderSubmission(event)">
+        <input type="hidden" id="formOrderDetails" name="Commande_Details">
+        <input type="hidden" id="formTotalPrice" name="Prix_Total">
+        <input type="hidden" id="formLocationCoords" name="Google_Maps_Link">
+
+        <div class="form-group">
+          <label>Nom / Utilisateur</label>
+          <input type="text" id="orderUserDisplayName" readonly style="opacity: 0.7;">
+        </div>
+
+        <div class="form-group">
+          <label>Adresse E-mail</label>
+          <input type="email" id="orderEmail" name="Email_Client" readonly style="opacity: 0.7;">
+        </div>
+
+        <div class="form-group">
+          <label>Numéro de Téléphone</label>
+          <input type="tel" id="orderPhone" name="Telephone" required placeholder="ex: 22 123 456">
+        </div>
+
+        <div class="form-group">
+          <label>Localisation sur la carte (Sfax)</label>
+          <button type="button" class="btn btn-outline btn-full" onclick="detectGPS()" style="margin-bottom: 6px; font-size: 12px;">
+            📍 Détecter ma position GPS
+          </button>
+          <div id="map" style="height: 200px; width: 100%; border-radius: 8px;"></div>
+          <small id="locationStatus" style="color: var(--accent); font-size: 11px; margin-top: 4px; display: block;"></small>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-full btn-large" style="margin-top: 15px;">
+          Confirmer la commande 🚀
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL FLOATING FEEDBACK ==================== -->
+  <div id="feedbackModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeFeedbackModal()">&times;</span>
+      <h2 style="margin-bottom: 10px; color: var(--accent); text-align: center;">Posez une question ou Proposez une idée 💡</h2>
+      <p style="font-size: 12px; color: var(--text-secondary); text-align: center; margin-bottom: 20px;">
+        Votre message sera directement envoyé au propriétaire de PetWorld Africano.
+      </p>
+
+      <form id="feedbackForm" onsubmit="submitFeedback(event)">
+        <div class="form-group">
+          <label>Votre Évaluation</label>
+          <div class="star-rating">
+            <span onclick="setRating('float', 1)">⭐</span>
+            <span onclick="setRating('float', 2)">⭐</span>
+            <span onclick="setRating('float', 3)">⭐</span>
+            <span onclick="setRating('float', 4)">⭐</span>
+            <span onclick="setRating('float', 5)">⭐</span>
+          </div>
+          <input type="hidden" id="floatRatingVal" name="Note_Etoiles" value="5">
+        </div>
+
+        <div class="form-group">
+          <label>Votre Question ou Proposition pour Africano</label>
+          <textarea id="feedbackText" name="Question_Proposition" rows="4" required placeholder="Ex: Avez-vous bientôt des nouveaux accessoires pour chats ?..." style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color); outline:none; font-size:13px;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">Envoyer au propriétaire 📩</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL POST-ORDER RATING ==================== -->
+  <div id="postOrderModal" class="modal hidden">
+    <div class="modal-content" style="text-align: center;">
+      <h2 style="color: var(--accent); margin-bottom: 10px;">Merci pour votre commande ! 🎉</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+        Que pensez-vous de votre expérience sur notre site PetWorld Africano ?
+      </p>
+
+      <form id="postOrderForm" onsubmit="finishPostOrderRating(event)">
+        <div class="form-group">
+          <div class="star-rating" style="justify-content: center; font-size: 28px;">
+            <span onclick="setRating('post', 1)">⭐</span>
+            <span onclick="setRating('post', 2)">⭐</span>
+            <span onclick="setRating('post', 3)">⭐</span>
+            <span onclick="setRating('post', 4)">⭐</span>
+            <span onclick="setRating('post', 5)">⭐</span>
+          </div>
+          <input type="hidden" id="postRatingVal" name="Note_Commande" value="5">
+        </div>
+
+        <div class="form-group">
+          <textarea id="postOrderRemark" name="Remarque_Commande" rows="3" placeholder="Laissez un petit commentaire (optionnel)..." style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color); outline:none; font-size:13px;"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button type="button" class="btn btn-outline" style="flex:1" onclick="skipPostOrderRating()">Passer (Skip) ⏩</button>
+          <button type="submit" class="btn btn-primary" style="flex:1">Envoyer l'Avis 🌟</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./script.js"></script>
+
+</body>
+</html>

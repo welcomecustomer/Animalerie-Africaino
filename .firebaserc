@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "animalerie-africaino"
+  },
+  "targets": {
+    "animalerie-africaino": {
+      "hosting": {
+        "production": [
+          "animalerie-africano"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

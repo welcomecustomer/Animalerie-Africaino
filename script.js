@@ -827,7 +827,6 @@ function searchProduct() {
 
   const sections = ["home-section", "chiens-section", "chats-section", "oiseaux-section", "poissons-section"];
 
-  // إذا كانت خانة البحث فارغة، نعيد عرض الكتالوجات كاملة ونُظهر جميع الأقسام
   if (value === "") {
     displayAllCatalogs();
     sections.forEach(id => {
@@ -840,13 +839,11 @@ function searchProduct() {
   const all = getAllItems();
   const filtered = all.filter(p => p.name.toLowerCase().includes(value));
 
-  // نظهر الأقسام الكل باش ما يختفي حتى قسم بالغالط
   sections.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.remove("hidden");
   });
 
-  // توزيع النتائج المفلترة على عناصرها بدقة أو تفريغ القسم إذا لم يكن فيه نتائج
   renderGrid("products-dogs", filtered.filter(p => dogProducts.some(dp => dp.id === p.id)), false);
   renderGrid("pets-dogs", filtered.filter(p => dogPets.some(dp => dp.id === p.id)), true);
   

@@ -53,14 +53,13 @@ body {
     opacity: 0;
     transform: translateY(12px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* ===== INSTRUCTION BANNER / TEXTE PANIER ===== */
+/* ===== INSTRUCTION BANNER ===== */
 .cart-instruction-box {
   background: rgba(16, 185, 129, 0.08);
   border: 1px solid var(--accent);
@@ -352,7 +351,8 @@ body {
   position: relative;
 }
 
-.dropdown:hover .dropdown-menu {
+.dropdown:hover .dropdown-menu,
+.dropdown.active .dropdown-menu {
   display: flex;
   opacity: 1;
   transform: translateY(0);
@@ -387,104 +387,85 @@ body {
   color: white;
 }
 
-/* ==================== HOME AFRICANO SECTION ==================== */
+/* ==================== HOME AFRICANO SECTION (CLEAN DESIGN) ==================== */
 .africano-hero-card {
-  position: relative;
-  overflow: hidden;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-glow) !important;
+  border-radius: var(--radius-lg) !important;
   padding: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
 }
 
 .hero-image-container {
-  position: relative;
-  width: 100%;
+  width: 100% !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  position: relative !important;
 }
 
 .bento-big img {
-  height: 380px;
-  width: 100%;
-  object-fit: cover;
-  border-radius: 12px;
+  height: 240px !important;
+  width: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 12px !important;
 }
 
 .hero-center-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 85%;
-  text-align: center;
-  z-index: 5;
-  background: rgba(18, 18, 18, 0.75);
-  padding: 20px;
-  border-radius: 12px;
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-glow);
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  background: transparent !important;
+  padding: 5px 0 !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  text-align: center !important;
 }
 
 .hero-center-content h2 {
-  font-size: 22px;
-  font-weight: 800;
-  color: #ffffff !important;
-  margin-bottom: 10px;
-  line-height: 1.3;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 8px !important;
 }
 
 .hero-center-content p {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0;
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.5 !important;
 }
 
 .hero-bottom-actions {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-  right: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 5;
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin-top: 5px !important;
+}
+
+.hero-bottom-actions .btn {
+  width: 100% !important;
+  padding: 12px !important;
+  font-size: 14px !important;
+  border-radius: var(--radius-sm) !important;
+  justify-content: center !important;
 }
 
 .btn-decouvrir {
-  background: rgba(24, 24, 27, 0.85);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.08);
   border-color: var(--border-color);
 }
 
 .btn-en-savoir {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-}
-
-@media (max-width: 768px) {
-  .bento-big img {
-    height: 440px;
-  }
-
-  .hero-center-content {
-    top: 42%;
-    width: 90%;
-    padding: 12px;
-  }
-
-  .hero-center-content h2 {
-    font-size: 16px;
-  }
-
-  .hero-center-content p {
-    font-size: 11px;
-  }
-
-  .hero-bottom-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .hero-bottom-actions .btn {
-    width: 100%;
-  }
 }
 
 .africano-features {
@@ -575,10 +556,6 @@ body {
   width: 100%;
   object-fit: cover;
   border-radius: 10px;
-}
-
-.bento-big img {
-  height: 260px;
 }
 
 .bento-col-center {
@@ -1087,13 +1064,12 @@ body {
   font-size: 11px;
 }
 
-/* MOBILE RESPONSIVE */
+/* MOBILE RESPONSIVE GENERAL */
 @media (max-width: 900px) {
   .bento-grid {
     grid-template-columns: 1fr;
   }
 
-  .bento-big img,
   .bento-tall img {
     height: 200px;
   }
@@ -1113,18 +1089,113 @@ body {
     height: 240px;
   }
 
-  .africano-hero {
-    padding: 30px 20px;
-  }
-
-  .africano-hero h2 {
-    font-size: 24px;
-  }
-
   .favorite-trigger {
     padding: 7px 10px;
   }
 }
+
 #cartPage.hidden, #mainPage.hidden, #detailsPage.hidden, #favoritesPage.hidden, #welcomePage.hidden {
   display: none !important;
+}
+
+/* MOBILE RESPONSIVE NAVBAR & CATEGORIES & DROPDOWNS (Push content down nicely) */
+@media (max-width: 980px) {
+  .navbar {
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+  }
+  
+  .brand {
+    font-size: 16px !important;
+  }
+
+  .auth-area {
+    gap: 6px !important;
+  }
+
+  .auth-area .btn, .cart-trigger, .favorite-trigger {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+
+  .search-container {
+    width: 100% !important;
+    order: 3 !important;
+    margin-top: 2px !important;
+  }
+
+  /* CATEGORY CONTAINER: Scroll horizontal clean */
+  .category-nav {
+    padding: 8px 0 !important;
+    top: 55px !important;
+  }
+
+  .category-container {
+    display: flex !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    padding: 0 12px !important;
+    gap: 8px !important;
+    width: 100% !important;
+    -webkit-overflow-scrolling: touch;
+    position: relative !important;
+  }
+
+  .category-container::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .nav-item {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+  }
+
+  /* DROPDOWNS: تتهبط في وسط الترتيب باش تدز العناصر اللي لوطة وما تغطيهمش */
+  .dropdown {
+    position: relative !important;
+  }
+
+  .dropdown-menu {
+    position: relative !important;
+    top: 5px !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: 1px dashed var(--border-glow) !important;
+    background: rgba(18, 18, 18, 0.98) !important;
+    padding: 6px 0 !important;
+    margin-top: 4px !important;
+    display: none;
+    z-index: 1005 !important;
+  }
+
+  .dropdown.active .dropdown-menu,
+  .dropdown:hover .dropdown-menu {
+    display: flex !important;
+    animation: slideDown 0.3s ease forwards;
+  }
+
+  .dropdown-menu a {
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    text-align: left !important;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

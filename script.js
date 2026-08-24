@@ -135,7 +135,7 @@ const defaultFishPets = [
   }
 ];
 
-// Load from LocalStorage if customized by Fedy, else defaults
+// Load from LocalStorage if customized, else defaults
 let dogProducts = JSON.parse(localStorage.getItem("pw_dogProducts")) || defaultDogProducts;
 let dogPets = JSON.parse(localStorage.getItem("pw_dogPets")) || defaultDogPets;
 let catProducts = JSON.parse(localStorage.getItem("pw_catProducts")) || defaultCatProducts;
@@ -452,7 +452,7 @@ function handleAuthSubmit(e) {
   displayAllCatalogs();
 
   if (email.toLowerCase() === ADMIN_EMAIL) {
-    alert("Bienvenue Admin ! Vous pouvez modifier n'importe quel produit sur le site (Image, Nom, Prix...).");
+    alert("Bienvenue Admin ! Vous pouvez modifier n'importe quel produit sur le site.");
   }
 }
 
@@ -512,7 +512,6 @@ function saveProductChanges(e) {
   const newImg = document.getElementById("editProductImg").value;
   const newDesc = document.getElementById("editProductDesc").value;
 
-  // Update in correct array & save to LocalStorage
   let found = false;
 
   const updateList = (list, storageKey) => {
@@ -536,7 +535,7 @@ function saveProductChanges(e) {
   updateList(fishProducts, "pw_fishProducts");
   updateList(fishPets, "pw_fishPets");
 
-if (found) {
+  if (found) {
     alert("Produit mis à jour avec succès ! 🔥");
     closeEditModal();
     displayAllCatalogs();
@@ -805,7 +804,7 @@ function prepareOrderSubmission(e) {
   })
   .then(response => response.json())
   .then(data => {
-    console.log("Commande envoyée avec succès:", data);
+    console.log("Commande envoyée:", data);
   })
   .catch(error => {
     console.error("Erreur:", error);
@@ -818,7 +817,7 @@ function prepareOrderSubmission(e) {
 }
 
 
-/*********************** SEARCH ***********************/
+/*********************** SEARCH (FIXED PROPERLY) ***********************/
 function searchProduct() {
   const searchInput = document.getElementById("search");
   if (!searchInput) return;
@@ -826,21 +825,37 @@ function searchProduct() {
   const suggestions = document.getElementById("suggestions");
   if (suggestions) suggestions.innerHTML = "";
 
+  const sections = ["home-section", "chiens-section", "chats-section", "oiseaux-section", "poissons-section"];
+
+  // إذا كانت خانة البحث فارغة، نعيد عرض الكتالوجات كاملة ونُظهر جميع الأقسام
   if (value === "") {
     displayAllCatalogs();
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("hidden");
+    });
     return;
   }
 
   const all = getAllItems();
   const filtered = all.filter(p => p.name.toLowerCase().includes(value));
 
-  showDogSection();
+  // نظهر الأقسام الكل باش ما يختفي حتى قسم بالغالط
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("hidden");
+  });
+
+  // توزيع النتائج المفلترة على عناصرها بدقة أو تفريغ القسم إذا لم يكن فيه نتائج
   renderGrid("products-dogs", filtered.filter(p => dogProducts.some(dp => dp.id === p.id)), false);
   renderGrid("pets-dogs", filtered.filter(p => dogPets.some(dp => dp.id === p.id)), true);
+  
   renderGrid("products-cats", filtered.filter(p => catProducts.some(cp => cp.id === p.id)), false);
   renderGrid("pets-cats", filtered.filter(p => catPets.some(cp => cp.id === p.id)), true);
+  
   renderGrid("products-birds", filtered.filter(p => birdProducts.some(bp => bp.id === p.id)), false);
   renderGrid("pets-birds", filtered.filter(p => birdPets.some(bp => bp.id === p.id)), true);
+  
   renderGrid("products-fishes", filtered.filter(p => fishProducts.some(fp => fp.id === p.id)), false);
   renderGrid("pets-fishes", filtered.filter(p => fishPets.some(fp => fp.id === p.id)), true);
 
@@ -852,6 +867,7 @@ function searchProduct() {
         showDetails(p.id);
         suggestions.innerHTML = "";
         searchInput.value = "";
+        displayAllCatalogs();
       };
       suggestions.appendChild(li);
     });

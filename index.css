@@ -1251,3 +1251,46 @@ html, body {
   max-width: 230px !important;
   scroll-snap-align: start;
 }
+/* =========================================================
+   MOBILE ONLY
+   À PROPOS فوق PANIER
+   PC = NO CHANGE
+========================================================= */
+
+@media (max-width: 980px) {
+
+  /* نخلي auth-area هو المرجع للـÀ Propos */
+  .navbar .auth-area {
+    position: relative !important;
+  }
+
+  /* À PROPOS الحقيقي الموجود داخل auth-area */
+  .navbar .auth-area > .btn {
+    position: absolute !important;
+
+    /* فوق الـPanier */
+    top: -38px !important;
+
+    /* على اليمين */
+    right: 0 !important;
+
+    z-index: 1005 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 6px 11px !important;
+    font-size: 11px !important;
+
+    border-radius: 16px !important;
+
+    background: rgba(16, 185, 129, 0.15) !important;
+    border: 1px solid var(--border-glow) !important;
+
+    color: var(--accent) !important;
+
+    white-space: nowrap !important;
+  }
+
+}

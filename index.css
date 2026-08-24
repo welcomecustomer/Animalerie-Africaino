@@ -1213,29 +1213,34 @@ html, body {
   overflow-y: hidden !important;
   scroll-snap-type: x mandatory;
   gap: 15px;
-  padding: 10px 5px 25px 5px !important; /* مساحة لوطا باش البار ياخذ باهيه وما يلصقش */
+  padding: 10px 5px 25px 5px !important;
   -webkit-overflow-scrolling: touch;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* إظهار وتصميم شريط التمرير الأفقي (Scrollbar) باش يكون واضح للعين وجذاب في التليفون */
+/* تصميم شريط التمرير الأفقي (Scrollbar) بلون رمادي كلاسيكي مألوف */
 .products-grid::-webkit-scrollbar, 
 .pets-grid::-webkit-scrollbar {
-  height: 8px !important; /* سمك البار باش يبين واضح */
+  height: 6px !important; /* رفيع ومرتب كيما المعروف */
   display: block !important;
 }
 
 .products-grid::-webkit-scrollbar-track, 
 .pets-grid::-webkit-scrollbar-track {
-  background: #f1f1f1 !important;
+  background: rgba(0, 0, 0, 0.04) !important; /* خلفية شفافة رمادية خفيفة برشة */
   border-radius: 10px;
 }
 
 .products-grid::-webkit-scrollbar-thumb, 
 .pets-grid::-webkit-scrollbar-thumb {
-  background: #007bff !important; /* لون البار (أزرق واضح) */
+  background: #c1c1c1 !important; /* لون رمادي كلاسيكي (Gris) معروف */
   border-radius: 10px;
+}
+
+.products-grid::-webkit-scrollbar-thumb:hover, 
+.pets-grid::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8 !important; /* رمادي أغمق شوي كيف العبد ينزل عليه */
 }
 
 /* تثبيت عرض كارت المنتج باش يتحركوا أفقياً وراء بعضهم وما ينكمشوش */

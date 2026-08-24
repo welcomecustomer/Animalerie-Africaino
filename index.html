@@ -525,7 +525,12 @@
         </div>
 
         <div class="form-group">
-          <label>Localisation sur la carte (Sfax)</label>
+          <label>Localisation détaillée (Quartier, Rue, Point de repère...)</label>
+          <input type="text" id="manualAddress" name="Adresse_Texte" placeholder="ex: Sakiet Ezzit, Route de Tunis Km 4, près de la station...">
+        </div>
+
+        <div class="form-group">
+          <label>Localisation sur la carte (Sfax) — optionnel si l'adresse ci-dessus est indiquée</label>
           <button type="button" class="btn btn-outline btn-full" onclick="detectGPS()" style="margin-bottom: 6px; font-size: 12px;">
             📍 Détecter ma position GPS
           </button>

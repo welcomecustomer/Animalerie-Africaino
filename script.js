@@ -184,38 +184,70 @@ const ADMIN_EMAIL = "fedybouaziz10@gmail.com";
 
 let savedScrollPosition = 0;
 
+/*
+   Compteur de verrouillage.
+
+   Plusieurs modales peuvent appeler
+   lockBodyScroll() / unlockBodyScroll()
+   (Checkout, About, Auth, Edit, Feedback,
+   PostOrder...). Avec un simple booléen,
+   fermer une modale pouvait déverrouiller
+   le scroll pendant qu'une autre modale
+   était encore ouverte, ou écraser la
+   position de scroll sauvegardée.
+
+   Le compteur garantit qu'on ne
+   verrouille "pour de vrai" qu'à la
+   première ouverture, et qu'on ne
+   déverrouille "pour de vrai" que quand
+   TOUTES les modales sont fermées.
+*/
+let scrollLockCount = 0;
+
 function lockBodyScroll() {
 
-  savedScrollPosition =
-    window.scrollY ||
-    window.pageYOffset ||
-    0;
+  if (scrollLockCount === 0) {
 
-  document.body.classList.add("checkout-open");
+    savedScrollPosition =
+      window.scrollY ||
+      window.pageYOffset ||
+      0;
 
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${savedScrollPosition}px`;
-  document.body.style.left = "0";
-  document.body.style.right = "0";
-  document.body.style.width = "100%";
-  document.body.style.overflow = "hidden";
+    document.body.classList.add("checkout-open");
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${savedScrollPosition}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+  }
+
+  scrollLockCount++;
 }
 
 function unlockBodyScroll() {
 
-  document.body.classList.remove("checkout-open");
+  if (scrollLockCount > 0) {
+    scrollLockCount--;
+  }
 
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.left = "";
-  document.body.style.right = "";
-  document.body.style.width = "";
-  document.body.style.overflow = "";
+  if (scrollLockCount === 0) {
 
-  window.scrollTo(
-    0,
-    savedScrollPosition
-  );
+    document.body.classList.remove("checkout-open");
+
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
+
+    window.scrollTo(
+      0,
+      savedScrollPosition
+    );
+  }
 }
 
 
@@ -522,6 +554,8 @@ function openFeedbackModal() {
   document
     .getElementById("feedbackModal")
     .classList.remove("hidden");
+
+  lockBodyScroll();
 }
 
 function closeFeedbackModal() {
@@ -529,6 +563,8 @@ function closeFeedbackModal() {
   document
     .getElementById("feedbackModal")
     .classList.add("hidden");
+
+  unlockBodyScroll();
 }
 
 function skipPostOrderRating() {
@@ -536,6 +572,8 @@ function skipPostOrderRating() {
   document
     .getElementById("postOrderModal")
     .classList.add("hidden");
+
+  unlockBodyScroll();
 
   cart = [];
   selectedCartItemIds = [];
@@ -557,6 +595,8 @@ function finishPostOrderRating(e) {
   document
     .getElementById("postOrderModal")
     .classList.add("hidden");
+
+  unlockBodyScroll();
 
   cart = [];
   selectedCartItemIds = [];
@@ -822,6 +862,8 @@ function openAboutModal() {
   document
     .getElementById("aboutModal")
     .classList.remove("hidden");
+
+  lockBodyScroll();
 }
 
 function closeAboutModal() {
@@ -829,6 +871,8 @@ function closeAboutModal() {
   document
     .getElementById("aboutModal")
     .classList.add("hidden");
+
+  unlockBodyScroll();
 }
 
 
@@ -874,6 +918,8 @@ function openAuthModal(mode) {
   document
     .getElementById("authModal")
     .classList.remove("hidden");
+
+  lockBodyScroll();
 }
 
 function closeAuthModal() {
@@ -881,6 +927,8 @@ function closeAuthModal() {
   document
     .getElementById("authModal")
     .classList.add("hidden");
+
+  unlockBodyScroll();
 }
 
 function handleAuthSubmit(e) {
@@ -1051,6 +1099,8 @@ function openEditModal(id) {
   document
     .getElementById("editProductModal")
     .classList.remove("hidden");
+
+  lockBodyScroll();
 }
 
 function closeEditModal() {
@@ -1058,6 +1108,8 @@ function closeEditModal() {
   document
     .getElementById("editProductModal")
     .classList.add("hidden");
+
+  unlockBodyScroll();
 }
 
 function saveProductChanges(e) {
@@ -1984,12 +2036,13 @@ function detectGPS() {
     if (locStatus) {
 
       locStatus.innerText =
-        "❌ GPS: HTTPS obligatoire.";
+        "❌ GPS: HTTPS obligatoire. Vous pouvez saisir votre adresse manuellement ci-dessus.";
     }
 
     alert(
       "📍 La localisation nécessite HTTPS.\n\n" +
-      "Ouvre ton site avec https:// et non http://."
+      "Ouvre ton site avec https:// et non http://.\n\n" +
+      "Astuce : vous pouvez aussi simplement écrire votre adresse dans le champ texte, sans utiliser le GPS."
     );
 
     return;
@@ -2006,11 +2059,12 @@ function detectGPS() {
     if (locStatus) {
 
       locStatus.innerText =
-        "❌ GPS non supporté.";
+        "❌ GPS non supporté. Utilisez le champ adresse ci-dessus.";
     }
 
     alert(
-      "La géolocalisation n'est pas supportée par ce navigateur."
+      "La géolocalisation n'est pas supportée par ce navigateur.\n\n" +
+      "Vous pouvez simplement écrire votre adresse dans le champ texte."
     );
 
     return;
@@ -2113,7 +2167,7 @@ function getGPSPositionHighAccuracy(
 
     {
       enableHighAccuracy: true,
-      timeout: 15000,
+      timeout: 8000,
       maximumAge: 10000
     }
   );
@@ -2135,7 +2189,7 @@ function getGPSPositionFallback(
 
     {
       enableHighAccuracy: false,
-      timeout: 20000,
+      timeout: 10000,
       maximumAge: 60000
     }
   );
@@ -2270,7 +2324,7 @@ function handleGPSError(
     if (locStatus) {
 
       locStatus.innerText =
-        "❌ Autorisation GPS refusée.";
+        "❌ Autorisation GPS refusée. Écrivez votre adresse ci-dessus à la place.";
     }
 
     alert(
@@ -2282,7 +2336,8 @@ function handleGPSError(
       "Sur Android :\n" +
       "Paramètres → Applications → Chrome → Autorisations → Localisation → Autoriser.\n\n" +
 
-      "Puis recharge la page et réessaie."
+      "Vous pouvez aussi tout simplement écrire votre adresse dans le champ texte au-dessus de la carte, " +
+      "sans avoir besoin du GPS."
     );
 
     return;
@@ -2300,12 +2355,13 @@ function handleGPSError(
     if (locStatus) {
 
       locStatus.innerText =
-        "⚠️ Position GPS indisponible.";
+        "⚠️ Position GPS indisponible. Écrivez votre adresse ci-dessus à la place.";
     }
 
     alert(
       "📍 Impossible de récupérer ta position.\n\n" +
-      "Vérifie que la localisation du téléphone est activée, puis réessaie."
+      "Vérifie que la localisation du téléphone est activée, puis réessaie.\n\n" +
+      "Vous pouvez aussi simplement écrire votre adresse dans le champ texte, sans utiliser le GPS."
     );
 
     return;
@@ -2323,13 +2379,14 @@ function handleGPSError(
     if (locStatus) {
 
       locStatus.innerText =
-        "⏱️ Recherche GPS trop longue.";
+        "⏱️ Recherche GPS trop longue. Écrivez votre adresse ci-dessus à la place.";
     }
 
     alert(
       "📍 Le GPS prend trop de temps.\n\n" +
       "Active la localisation du téléphone et réessaie.\n\n" +
-      "Tu peux aussi sélectionner directement ta position sur la carte."
+      "Vous pouvez aussi directement écrire votre adresse dans le champ texte au-dessus de la carte, " +
+      "ou sélectionner votre position en cliquant sur la carte."
     );
 
     return;
@@ -2342,12 +2399,13 @@ function handleGPSError(
   if (locStatus) {
 
     locStatus.innerText =
-      "❌ Erreur GPS.";
+      "❌ Erreur GPS. Écrivez votre adresse ci-dessus à la place.";
   }
 
   alert(
     "Une erreur est survenue avec la localisation.\n\n" +
-    "Vérifie que la localisation est activée puis réessaie."
+    "Vérifie que la localisation est activée puis réessaie.\n\n" +
+    "Vous pouvez aussi simplement écrire votre adresse dans le champ texte, sans utiliser le GPS."
   );
 }
 
@@ -2360,10 +2418,27 @@ function prepareOrderSubmission(e) {
     e.preventDefault();
   }
 
-  if (!selectedCoords) {
+  const manualAddressInput =
+    document.getElementById(
+      "manualAddress"
+    );
+
+  const manualAddress =
+    manualAddressInput
+      ? manualAddressInput.value.trim()
+      : "";
+
+  /*
+   La commande peut passer avec :
+   - une position choisie sur la carte / GPS (selectedCoords)
+   - OU une adresse écrite manuellement (manualAddress)
+   Si aucune des deux n'est fournie, on bloque.
+  */
+  if (!selectedCoords && !manualAddress) {
 
     alert(
-      "Veuillez sélectionner votre localisation sur la carte !"
+      "Veuillez indiquer votre localisation : soit en écrivant votre adresse " +
+      "(quartier, rue, point de repère...), soit en sélectionnant votre position sur la carte."
     );
 
     return;
@@ -2436,7 +2511,8 @@ function prepareOrderSubmission(e) {
   if (formCoords) {
 
     formCoords.value =
-      selectedCoords;
+      selectedCoords ||
+      "Non fourni (voir adresse écrite)";
   }
 
   const formElement =
@@ -2502,6 +2578,8 @@ function prepareOrderSubmission(e) {
     postModal.classList.remove(
       "hidden"
     );
+
+    lockBodyScroll();
   }
 }
 

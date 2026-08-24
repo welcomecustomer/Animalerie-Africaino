@@ -180,12 +180,52 @@ let selectedCoords = "";
 const ADMIN_EMAIL = "fedybouaziz10@gmail.com";
 
 
+/*********************** MOBILE SCROLL LOCK ***********************/
+
+let savedScrollPosition = 0;
+
+function lockBodyScroll() {
+
+  savedScrollPosition =
+    window.scrollY ||
+    window.pageYOffset ||
+    0;
+
+  document.body.classList.add("checkout-open");
+
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${savedScrollPosition}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.body.style.overflow = "hidden";
+}
+
+function unlockBodyScroll() {
+
+  document.body.classList.remove("checkout-open");
+
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  document.body.style.overflow = "";
+
+  window.scrollTo(
+    0,
+    savedScrollPosition
+  );
+}
+
+
 /*********************** FAVORITES ***********************/
 
 let favorites =
   JSON.parse(localStorage.getItem("petworldFavorites")) || [];
 
 function getAllItems() {
+
   return [
     ...dogProducts,
     ...dogPets,
@@ -199,19 +239,34 @@ function getAllItems() {
 }
 
 function isFavorite(id) {
-  return favorites.some(product => product.id === id);
+
+  return favorites.some(
+    product => product.id === id
+  );
 }
 
 function toggleFavorite(id, event) {
-  if (event) event.stopPropagation();
 
-  const product = getAllItems().find(p => p.id === id);
+  if (event) {
+    event.stopPropagation();
+  }
+
+  const product =
+    getAllItems().find(
+      p => p.id === id
+    );
 
   if (!product) return;
 
   if (isFavorite(id)) {
-    favorites = favorites.filter(p => p.id !== id);
+
+    favorites =
+      favorites.filter(
+        p => p.id !== id
+      );
+
   } else {
+
     favorites.push(product);
   }
 
@@ -224,37 +279,50 @@ function toggleFavorite(id, event) {
   updateFavoriteHearts();
 
   const favoritesPage =
-    document.getElementById("favoritesPage");
+    document.getElementById(
+      "favoritesPage"
+    );
 
   if (
     favoritesPage &&
     !favoritesPage.classList.contains("hidden")
   ) {
+
     displayFavorites();
   }
 }
 
 function updateFavoriteCount() {
+
   const counter =
-    document.getElementById("favorite-count");
+    document.getElementById(
+      "favorite-count"
+    );
 
   if (counter) {
-    counter.innerText = favorites.length;
+    counter.innerText =
+      favorites.length;
   }
 }
 
 function updateFavoriteHearts() {
+
   document
     .querySelectorAll(".favorite-heart")
     .forEach(button => {
 
       const id =
-        Number(button.dataset.productId);
+        Number(
+          button.dataset.productId
+        );
 
       if (isFavorite(id)) {
+
         button.classList.add("active");
         button.innerHTML = "❤️";
+
       } else {
+
         button.classList.remove("active");
         button.innerHTML = "♡";
       }
@@ -289,7 +357,9 @@ function openFavoritesPage() {
 function displayFavorites() {
 
   const container =
-    document.getElementById("favoriteProducts");
+    document.getElementById(
+      "favoriteProducts"
+    );
 
   if (!container) return;
 
@@ -298,15 +368,21 @@ function displayFavorites() {
     container.innerHTML = `
       <div class="favorite-empty"
            style="grid-column:1/-1;text-align:center;padding:40px;">
-        <div class="empty-heart"
-             style="font-size:40px;">♡</div>
 
-        <h3>Vous n'avez pas encore de favoris</h3>
+        <div class="empty-heart"
+             style="font-size:40px;">
+          ♡
+        </div>
+
+        <h3>
+          Vous n'avez pas encore de favoris
+        </h3>
 
         <p>
           Cliquez sur ❤️ sur un produit
           pour l'ajouter à vos favoris.
         </p>
+
       </div>
     `;
 
@@ -334,7 +410,9 @@ function displayFavorites() {
             src="${product.img}"
             alt="${product.name}">
 
-          <h3>${product.name}</h3>
+          <h3>
+            ${product.name}
+          </h3>
 
           <div class="price">
             ${product.price} DT
@@ -468,9 +546,13 @@ function skipPostOrderRating() {
 
 function finishPostOrderRating(e) {
 
-  if (e) e.preventDefault();
+  if (e) {
+    e.preventDefault();
+  }
 
-  alert("Merci pour votre avis !");
+  alert(
+    "Merci pour votre avis !"
+  );
 
   document
     .getElementById("postOrderModal")
@@ -533,7 +615,9 @@ function showHomeSection() {
   resetNavActive();
 
   const navs =
-    document.querySelectorAll(".nav-item");
+    document.querySelectorAll(
+      ".nav-item"
+    );
 
   if (navs[0]) {
     navs[0].classList.add("active");
@@ -542,7 +626,9 @@ function showHomeSection() {
   hideAllSections();
 
   const sec =
-    document.getElementById("home-section");
+    document.getElementById(
+      "home-section"
+    );
 
   if (sec) {
     sec.classList.remove("hidden");
@@ -555,7 +641,9 @@ function showDogSection() {
   resetNavActive();
 
   const navs =
-    document.querySelectorAll(".nav-item");
+    document.querySelectorAll(
+      ".nav-item"
+    );
 
   if (navs[1]) {
     navs[1].classList.add("active");
@@ -564,7 +652,9 @@ function showDogSection() {
   hideAllSections();
 
   const sec =
-    document.getElementById("chiens-section");
+    document.getElementById(
+      "chiens-section"
+    );
 
   if (sec) {
     sec.classList.remove("hidden");
@@ -577,7 +667,9 @@ function showCatSection() {
   resetNavActive();
 
   const navs =
-    document.querySelectorAll(".nav-item");
+    document.querySelectorAll(
+      ".nav-item"
+    );
 
   if (navs[2]) {
     navs[2].classList.add("active");
@@ -586,7 +678,9 @@ function showCatSection() {
   hideAllSections();
 
   const sec =
-    document.getElementById("chats-section");
+    document.getElementById(
+      "chats-section"
+    );
 
   if (sec) {
     sec.classList.remove("hidden");
@@ -599,7 +693,9 @@ function showBirdSection() {
   resetNavActive();
 
   const navs =
-    document.querySelectorAll(".nav-item");
+    document.querySelectorAll(
+      ".nav-item"
+    );
 
   if (navs[3]) {
     navs[3].classList.add("active");
@@ -608,7 +704,9 @@ function showBirdSection() {
   hideAllSections();
 
   const sec =
-    document.getElementById("oiseaux-section");
+    document.getElementById(
+      "oiseaux-section"
+    );
 
   if (sec) {
     sec.classList.remove("hidden");
@@ -621,7 +719,9 @@ function showFishSection() {
   resetNavActive();
 
   const navs =
-    document.querySelectorAll(".nav-item");
+    document.querySelectorAll(
+      ".nav-item"
+    );
 
   if (navs[4]) {
     navs[4].classList.add("active");
@@ -630,7 +730,9 @@ function showFishSection() {
   hideAllSections();
 
   const sec =
-    document.getElementById("poissons-section");
+    document.getElementById(
+      "poissons-section"
+    );
 
   if (sec) {
     sec.classList.remove("hidden");
@@ -658,11 +760,15 @@ function scrollToSection(targetId) {
   setTimeout(() => {
 
     const el =
-      document.getElementById(targetId);
+      document.getElementById(
+        targetId
+      );
 
     if (el) {
+
       el.scrollIntoView({
-        behavior: "smooth"
+        behavior: "smooth",
+        block: "start"
       });
     }
 
@@ -698,7 +804,9 @@ function goHome() {
     .classList.add("hidden");
 
   const favoritesPage =
-    document.getElementById("favoritesPage");
+    document.getElementById(
+      "favoritesPage"
+    );
 
   if (favoritesPage) {
     favoritesPage.classList.add("hidden");
@@ -735,10 +843,13 @@ function checkSavedUser() {
 
   if (savedEmail) {
 
-    currentUserEmail = savedEmail;
+    currentUserEmail =
+      savedEmail;
 
     currentUserCleanName =
-      extractCleanName(savedEmail);
+      extractCleanName(
+        savedEmail
+      );
   }
 
   renderAuthHeader();
@@ -784,7 +895,8 @@ function handleAuthSubmit(e) {
 
   if (!email) return;
 
-  currentUserEmail = email;
+  currentUserEmail =
+    email;
 
   currentUserCleanName =
     extractCleanName(email);
@@ -799,9 +911,13 @@ function handleAuthSubmit(e) {
   closeAuthModal();
 
   const form =
-    document.getElementById("authForm");
+    document.getElementById(
+      "authForm"
+    );
 
-  if (form) form.reset();
+  if (form) {
+    form.reset();
+  }
 
   displayAllCatalogs();
 
@@ -1113,7 +1229,9 @@ function renderGrid(
             src="${p.img}"
             alt="${p.name}">
 
-          <h3>${p.name}</h3>
+          <h3>
+            ${p.name}
+          </h3>
 
           <div class="price">
             ${p.price} DT
@@ -1234,20 +1352,35 @@ function showDetails(id) {
       currentProduct.img;
   }
 
-  document.getElementById(
-    "detail-name"
-  ).innerText =
-    currentProduct.name;
+  const detailName =
+    document.getElementById(
+      "detail-name"
+    );
 
-  document.getElementById(
-    "detail-desc"
-  ).innerText =
-    currentProduct.desc;
+  if (detailName) {
+    detailName.innerText =
+      currentProduct.name;
+  }
 
-  document.getElementById(
-    "detail-price"
-  ).innerText =
-    `${currentProduct.price} DT`;
+  const detailDesc =
+    document.getElementById(
+      "detail-desc"
+    );
+
+  if (detailDesc) {
+    detailDesc.innerText =
+      currentProduct.desc;
+  }
+
+  const detailPrice =
+    document.getElementById(
+      "detail-price"
+    );
+
+  if (detailPrice) {
+    detailPrice.innerText =
+      `${currentProduct.price} DT`;
+  }
 }
 
 
@@ -1264,6 +1397,7 @@ function addToCartById(id) {
 
   const item = {
     ...product,
+
     cartItemId:
       Date.now() +
       Math.random()
@@ -1281,6 +1415,7 @@ function addToCartById(id) {
 function addToCartFromDetails() {
 
   if (currentProduct) {
+
     addToCartById(
       currentProduct.id
     );
@@ -1401,7 +1536,9 @@ function renderCart() {
           src="${item.img}"
           alt="${item.name}">
 
-        <h3>${item.name}</h3>
+        <h3>
+          ${item.name}
+        </h3>
 
         <div class="price">
           ${item.price} DT
@@ -1443,6 +1580,7 @@ function toggleItemSelection(
         cartItemId
       )
     ) {
+
       selectedCartItemIds.push(
         cartItemId
       );
@@ -1464,11 +1602,14 @@ function toggleSelectAll(
 ) {
 
   if (masterCheckbox.checked) {
+
     selectedCartItemIds =
       cart.map(
         i => i.cartItemId
       );
+
   } else {
+
     selectedCartItemIds = [];
   }
 
@@ -1488,7 +1629,8 @@ function removeFromCart(
 
   selectedCartItemIds =
     selectedCartItemIds.filter(
-      id => id !== cartItemId
+      id =>
+        id !== cartItemId
     );
 
   updateCartCount();
@@ -1514,8 +1656,11 @@ function updateCartSummary() {
       parseFloat(item.price);
 
     if (!isNaN(numericPrice)) {
+
       total += numericPrice;
+
     } else {
+
       hasUnknownPrice = true;
     }
   });
@@ -1531,6 +1676,7 @@ function updateCartSummary() {
     );
 
   if (totalPriceEl) {
+
     totalPriceEl.innerText =
       `Total: ${totalText}`;
   }
@@ -1599,22 +1745,48 @@ function openCheckoutModal() {
       currentUserCleanName;
   }
 
-  document
-    .getElementById("checkoutModal")
-    .classList.remove("hidden");
+  const modal =
+    document.getElementById(
+      "checkoutModal"
+    );
 
+  if (modal) {
+    modal.classList.remove("hidden");
+  }
+
+  /*
+   IMPORTANT iPhone:
+   Bloquer le scroll de la page derrière le modal.
+  */
+  lockBodyScroll();
+
+  /*
+   Donner au navigateur un petit délai
+   avant de calculer la taille de la carte.
+  */
   setTimeout(() => {
 
     initMap();
 
-  }, 300);
+    if (map) {
+      map.invalidateSize(true);
+    }
+
+  }, 350);
 }
 
 function closeCheckoutModal() {
 
-  document
-    .getElementById("checkoutModal")
-    .classList.add("hidden");
+  const modal =
+    document.getElementById(
+      "checkoutModal"
+    );
+
+  if (modal) {
+    modal.classList.add("hidden");
+  }
+
+  unlockBodyScroll();
 }
 
 
@@ -1625,6 +1797,18 @@ function initMap() {
   const sfaxCoords =
     [34.74056, 10.76028];
 
+  const mapElement =
+    document.getElementById(
+      "map"
+    );
+
+  if (!mapElement) {
+    console.warn(
+      "Map element #map introuvable."
+    );
+    return;
+  }
+
   if (!window.L) {
 
     alert(
@@ -1634,19 +1818,42 @@ function initMap() {
     return;
   }
 
+  /*
+   Si la map existe déjà,
+   on ne la recrée surtout pas.
+  */
   if (!map) {
 
-    map =
-      L.map("map").setView(
-        sfaxCoords,
-        13
+    try {
+
+      map =
+        L.map(
+          mapElement,
+          {
+            zoomControl: true,
+            attributionControl: true
+          }
+        ).setView(
+          sfaxCoords,
+          13
+        );
+
+    } catch (error) {
+
+      console.error(
+        "Erreur création Leaflet:",
+        error
       );
+
+      return;
+    }
 
     L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
         attribution:
-          "&copy; OpenStreetMap"
+          "&copy; OpenStreetMap contributors",
+        maxZoom: 19
       }
     ).addTo(map);
 
@@ -1662,10 +1869,36 @@ function initMap() {
       }
     );
 
+    /*
+     Empêcher certains gestes du navigateur
+     de faire bouger toute la page pendant
+     l'interaction avec la carte.
+    */
+
+    if (mapElement) {
+
+      mapElement.style.touchAction =
+        "none";
+
+      mapElement.style.overscrollBehavior =
+        "contain";
+    }
+
   } else {
 
-    map.invalidateSize();
+    /*
+     IMPORTANT sur iPhone:
+     Leaflet est parfois initialisée dans
+     un élément caché. On force le recalcul.
+    */
 
+    setTimeout(() => {
+
+      if (map) {
+        map.invalidateSize(true);
+      }
+
+    }, 100);
   }
 }
 
@@ -1675,6 +1908,13 @@ function setMapMarker(
 ) {
 
   if (!map) return;
+
+  if (
+    typeof lat !== "number" ||
+    typeof lng !== "number"
+  ) {
+    return;
+  }
 
   if (marker) {
 
@@ -1710,6 +1950,20 @@ function setMapMarker(
 
 /*********************** GPS MOBILE FIX ***********************/
 
+/*
+  Fonction principale GPS.
+
+  Cette version fonctionne avec:
+  - iPhone / Safari
+  - Android / Chrome
+  - HTTPS
+  - GPS précis
+  - fallback si GPS précis échoue
+  - permission refusée
+  - GPS désactivé
+  - timeout
+*/
+
 function detectGPS() {
 
   const locStatus =
@@ -1718,28 +1972,42 @@ function detectGPS() {
     );
 
   /*
-   IMPORTANT:
-   Sur téléphone, Geolocation nécessite
-   généralement HTTPS.
+   1. Vérification HTTPS
   */
 
-  if (!window.isSecureContext) {
+  if (
+    !window.isSecureContext &&
+    location.hostname !== "localhost" &&
+    location.hostname !== "127.0.0.1"
+  ) {
 
     if (locStatus) {
 
       locStatus.innerText =
-        "❌ GPS: le site doit être ouvert en HTTPS.";
+        "❌ GPS: HTTPS obligatoire.";
     }
 
     alert(
-      "📍 La localisation du téléphone nécessite HTTPS.\n\n" +
+      "📍 La localisation nécessite HTTPS.\n\n" +
       "Ouvre ton site avec https:// et non http://."
     );
 
     return;
   }
 
-  if (!navigator.geolocation) {
+  /*
+   2. Vérification navigateur
+  */
+
+  if (
+    !navigator.geolocation
+  ) {
+
+    if (locStatus) {
+
+      locStatus.innerText =
+        "❌ GPS non supporté.";
+    }
 
     alert(
       "La géolocalisation n'est pas supportée par ce navigateur."
@@ -1748,141 +2016,339 @@ function detectGPS() {
     return;
   }
 
+  /*
+   3. Status
+  */
+
   if (locStatus) {
 
     locStatus.innerText =
-      "⏳ Autorisation GPS en cours...";
+      "⏳ Recherche de votre position...";
   }
+
+  /*
+   4. Préparer la map
+  */
+
+  if (!map) {
+    initMap();
+  }
+
+  if (map) {
+
+    setTimeout(() => {
+
+      map.invalidateSize(true);
+
+    }, 150);
+  }
+
+  /*
+   5. Première tentative:
+      GPS haute précision.
+  */
+
+  getGPSPositionHighAccuracy(
+    function(position) {
+
+      handleGPSPosition(
+        position
+      );
+
+    },
+
+    function(firstError) {
+
+      console.warn(
+        "GPS haute précision échoué:",
+        firstError
+      );
+
+      /*
+       6. FALLBACK ANDROID / MOBILE
+
+       On réessaie sans haute précision.
+       C'est très important sur certains Android.
+      */
+
+      if (locStatus) {
+
+        locStatus.innerText =
+          "⏳ Recherche de position alternative...";
+      }
+
+      getGPSPositionFallback(
+        function(position) {
+
+          handleGPSPosition(
+            position
+          );
+
+        },
+
+        function(secondError) {
+
+          handleGPSError(
+            secondError
+          );
+        }
+      );
+    }
+  );
+}
+
+
+/*********************** GPS HIGH ACCURACY ***********************/
+
+function getGPSPositionHighAccuracy(
+  success,
+  error
+) {
+
+  navigator.geolocation.getCurrentPosition(
+
+    success,
+
+    error,
+
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000
+    }
+  );
+}
+
+
+/*********************** GPS FALLBACK ***********************/
+
+function getGPSPositionFallback(
+  success,
+  error
+) {
+
+  navigator.geolocation.getCurrentPosition(
+
+    success,
+
+    error,
+
+    {
+      enableHighAccuracy: false,
+      timeout: 20000,
+      maximumAge: 60000
+    }
+  );
+}
+
+
+/*********************** GPS SUCCESS ***********************/
+
+function handleGPSPosition(
+  position
+) {
+
+  if (!position) {
+    return;
+  }
+
+  const lat =
+    position.coords.latitude;
+
+  const lng =
+    position.coords.longitude;
+
+  const accuracy =
+    position.coords.accuracy;
+
+  if (
+    typeof lat !== "number" ||
+    typeof lng !== "number"
+  ) {
+
+    const locStatus =
+      document.getElementById(
+        "locationStatus"
+      );
+
+    if (locStatus) {
+
+      locStatus.innerText =
+        "❌ Position invalide.";
+    }
+
+    return;
+  }
+
+  /*
+   Recréer/initialiser la carte si nécessaire.
+  */
 
   if (!map) {
     initMap();
   }
 
   /*
-   Petite pause pour laisser la carte
-   être complètement prête sur mobile.
+   Centrer la map.
   */
 
-  setTimeout(() => {
+  if (map) {
 
-    navigator.geolocation.getCurrentPosition(
+    map.invalidateSize(true);
 
-      function(pos) {
-
-        const lat =
-          pos.coords.latitude;
-
-        const lng =
-          pos.coords.longitude;
-
-        const accuracy =
-          pos.coords.accuracy;
-
-        if (!map) {
-          initMap();
-        }
-
-        if (map) {
-
-          map.setView(
-            [lat, lng],
-            17,
-            {
-              animate: true
-            }
-          );
-        }
-
-        setMapMarker(
-          lat,
-          lng
-        );
-
-        if (locStatus) {
-
-          locStatus.innerText =
-            `📍 Position détectée ! Précision ±${Math.round(accuracy)}m`;
-        }
-
-      },
-
-      function(error) {
-
-        console.error(
-          "GPS ERROR:",
-          error.code,
-          error.message
-        );
-
-        if (error.code === 1) {
-
-          if (locStatus) {
-
-            locStatus.innerText =
-              "❌ Autorisation GPS refusée.";
-          }
-
-          alert(
-            "📍 L'accès à la localisation a été refusé.\n\n" +
-            "Sur ton téléphone, autorise la localisation pour le navigateur puis réessaie."
-          );
-
-        }
-
-        else if (error.code === 2) {
-
-          if (locStatus) {
-
-            locStatus.innerText =
-              "⚠️ Position GPS indisponible.";
-          }
-
-          alert(
-            "📍 Impossible de récupérer ta position.\n\n" +
-            "Vérifie que la localisation du téléphone est activée."
-          );
-
-        }
-
-        else if (error.code === 3) {
-
-          if (locStatus) {
-
-            locStatus.innerText =
-              "⏱️ Le GPS a pris trop de temps.";
-          }
-
-          alert(
-            "📍 Le GPS prend trop de temps.\n\n" +
-            "Essaie encore une fois ou sélectionne directement ta position sur la carte."
-          );
-
-        }
-
-        else {
-
-          if (locStatus) {
-
-            locStatus.innerText =
-              "❌ Erreur GPS.";
-          }
-
-          alert(
-            "Une erreur est survenue avec la localisation."
-          );
-        }
-
-      },
-
+    map.setView(
+      [lat, lng],
+      17,
       {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 0
+        animate: true
       }
+    );
+  }
 
+  /*
+   Ajouter marker.
+  */
+
+  setMapMarker(
+    lat,
+    lng
+  );
+
+  /*
+   Afficher résultat.
+  */
+
+  const locStatus =
+    document.getElementById(
+      "locationStatus"
     );
 
-  }, 300);
+  if (locStatus) {
+
+    if (
+      typeof accuracy === "number" &&
+      isFinite(accuracy)
+    ) {
+
+      locStatus.innerText =
+        `📍 Position détectée ! Précision ±${Math.round(accuracy)}m`;
+
+    } else {
+
+      locStatus.innerText =
+        "📍 Position détectée !";
+    }
+  }
+}
+
+
+/*********************** GPS ERROR ***********************/
+
+function handleGPSError(
+  error
+) {
+
+  console.error(
+    "GPS FINAL ERROR:",
+    error
+  );
+
+  const locStatus =
+    document.getElementById(
+      "locationStatus"
+    );
+
+  /*
+   PERMISSION DENIED
+  */
+
+  if (
+    error &&
+    error.code === 1
+  ) {
+
+    if (locStatus) {
+
+      locStatus.innerText =
+        "❌ Autorisation GPS refusée.";
+    }
+
+    alert(
+      "📍 L'accès à la localisation a été refusé.\n\n" +
+
+      "Sur iPhone :\n" +
+      "Réglages → Confidentialité et sécurité → Service de localisation → Safari → Autoriser.\n\n" +
+
+      "Sur Android :\n" +
+      "Paramètres → Applications → Chrome → Autorisations → Localisation → Autoriser.\n\n" +
+
+      "Puis recharge la page et réessaie."
+    );
+
+    return;
+  }
+
+  /*
+   POSITION UNAVAILABLE
+  */
+
+  if (
+    error &&
+    error.code === 2
+  ) {
+
+    if (locStatus) {
+
+      locStatus.innerText =
+        "⚠️ Position GPS indisponible.";
+    }
+
+    alert(
+      "📍 Impossible de récupérer ta position.\n\n" +
+      "Vérifie que la localisation du téléphone est activée, puis réessaie."
+    );
+
+    return;
+  }
+
+  /*
+   TIMEOUT
+  */
+
+  if (
+    error &&
+    error.code === 3
+  ) {
+
+    if (locStatus) {
+
+      locStatus.innerText =
+        "⏱️ Recherche GPS trop longue.";
+    }
+
+    alert(
+      "📍 Le GPS prend trop de temps.\n\n" +
+      "Active la localisation du téléphone et réessaie.\n\n" +
+      "Tu peux aussi sélectionner directement ta position sur la carte."
+    );
+
+    return;
+  }
+
+  /*
+   UNKNOWN ERROR
+  */
+
+  if (locStatus) {
+
+    locStatus.innerText =
+      "❌ Erreur GPS.";
+  }
+
+  alert(
+    "Une erreur est survenue avec la localisation.\n\n" +
+    "Vérifie que la localisation est activée puis réessaie."
+  );
 }
 
 
@@ -1911,7 +2377,9 @@ function prepareOrderSubmission(e) {
         )
     );
 
-  if (selectedItems.length === 0) {
+  if (
+    selectedItems.length === 0
+  ) {
 
     alert(
       "Veuillez sélectionner au moins un article."
@@ -1928,10 +2396,15 @@ function prepareOrderSubmission(e) {
       )
       .join(", ");
 
-  const totalPriceText =
+  const totalPriceEl =
     document.getElementById(
       "cart-total-price"
-    ).innerText;
+    );
+
+  const totalPriceText =
+    totalPriceEl
+      ? totalPriceEl.innerText
+      : "";
 
   const formDetails =
     document.getElementById(
@@ -1949,16 +2422,19 @@ function prepareOrderSubmission(e) {
     );
 
   if (formDetails) {
+
     formDetails.value =
       orderDetailsText;
   }
 
   if (formTotal) {
+
     formTotal.value =
       totalPriceText;
   }
 
   if (formCoords) {
+
     formCoords.value =
       selectedCoords;
   }
@@ -1978,7 +2454,9 @@ function prepareOrderSubmission(e) {
   }
 
   const formData =
-    new FormData(formElement);
+    new FormData(
+      formElement
+    );
 
   fetch(
     "https://formsubmit.co/ajax/fedybouaziz10@gmail.com",
@@ -2050,7 +2528,9 @@ function searchProduct() {
     );
 
   if (suggestions) {
-    suggestions.innerHTML = "";
+
+    suggestions.innerHTML =
+      "";
   }
 
   const sections = [
@@ -2068,9 +2548,12 @@ function searchProduct() {
     sections.forEach(id => {
 
       const el =
-        document.getElementById(id);
+        document.getElementById(
+          id
+        );
 
       if (el) {
+
         el.classList.remove(
           "hidden"
         );
@@ -2095,9 +2578,12 @@ function searchProduct() {
   sections.forEach(id => {
 
     const el =
-      document.getElementById(id);
+      document.getElementById(
+        id
+      );
 
     if (el) {
+
       el.classList.remove(
         "hidden"
       );
@@ -2242,6 +2728,100 @@ document.addEventListener(
 
     displayAllCatalogs();
 
+  }
+);
+
+
+/*********************** SAFETY / MOBILE ***********************/
+
+/*
+   إذا تبدلت orientation أو تبدلت
+   حجم الشاشة، نصلح حجم Leaflet.
+*/
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    if (map) {
+
+      setTimeout(() => {
+
+        map.invalidateSize(true);
+
+      }, 200);
+    }
+  }
+);
+
+window.addEventListener(
+  "orientationchange",
+  () => {
+
+    if (map) {
+
+      setTimeout(() => {
+
+        map.invalidateSize(true);
+
+      }, 500);
+    }
+  }
+);
+
+
+/*
+   إذا الصفحة رجعت من background
+   على الهاتف، نصلح الخريطة.
+*/
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if (
+      !document.hidden &&
+      map
+    ) {
+
+      setTimeout(() => {
+
+        map.invalidateSize(true);
+
+      }, 300);
+    }
+  }
+);
+
+
+/*
+   إذا المستخدم ضغط ESC
+   نسكر Checkout ونرجع scroll.
+*/
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      const checkoutModal =
+        document.getElementById(
+          "checkoutModal"
+        );
+
+      if (
+        checkoutModal &&
+        !checkoutModal.classList.contains(
+          "hidden"
+        )
+      ) {
+
+        closeCheckoutModal();
+      }
+    }
   }
 );
 

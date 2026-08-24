@@ -1199,3 +1199,50 @@ body {
     transform: translateY(0);
   }
 }
+/* تثبيت الصفحة ومنع التحريك العرضي العام */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* تحويل أقسام المنتجات والحيوانات إلى سطر أفقي مع إظهار شريط التمرير (Scrollbar) بشكل واضح */
+.products-grid, .pets-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory;
+  gap: 15px;
+  padding: 10px 5px 25px 5px !important; /* مساحة لوطا باش البار ياخذ باهيه وما يلصقش */
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* إظهار وتصميم شريط التمرير الأفقي (Scrollbar) باش يكون واضح للعين وجذاب في التليفون */
+.products-grid::-webkit-scrollbar, 
+.pets-grid::-webkit-scrollbar {
+  height: 8px !important; /* سمك البار باش يبين واضح */
+  display: block !important;
+}
+
+.products-grid::-webkit-scrollbar-track, 
+.pets-grid::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 10px;
+}
+
+.products-grid::-webkit-scrollbar-thumb, 
+.pets-grid::-webkit-scrollbar-thumb {
+  background: #007bff !important; /* لون البار (أزرق واضح) */
+  border-radius: 10px;
+}
+
+/* تثبيت عرض كارت المنتج باش يتحركوا أفقياً وراء بعضهم وما ينكمشوش */
+.products-grid .product-card, 
+.pets-grid .product-card {
+  flex: 0 0 230px !important;
+  min-width: 230px !important;
+  max-width: 230px !important;
+  scroll-snap-align: start;
+}

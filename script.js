@@ -779,6 +779,20 @@ function showFishSection() {
   }
 }
 
+/*
+  Bouton "Découvrir" dans le bandeau Africano
+  (home-section). Il appelait showCatalog(), mais
+  cette fonction n'existait nulle part dans le
+  script -> le clic ne faisait donc rien.
+  On l'ajoute ici : elle amène directement vers la
+  section Chiens (premier catalogue), exactement
+  comme les autres liens de navigation.
+*/
+function showCatalog() {
+
+  showDogSection();
+}
+
 function scrollToSection(targetId) {
 
   if (targetId.startsWith("chiens")) {
@@ -2983,6 +2997,9 @@ window.showBirdSection =
 
 window.showFishSection =
   showFishSection;
+
+window.showCatalog =
+  showCatalog;
 
 window.scrollToSection =
   scrollToSection;

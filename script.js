@@ -183,25 +183,6 @@ const ADMIN_EMAIL = "fedybouaziz10@gmail.com";
 /*********************** MOBILE SCROLL LOCK ***********************/
 
 let savedScrollPosition = 0;
-
-/*
-   Compteur de verrouillage.
-
-   Plusieurs modales peuvent appeler
-   lockBodyScroll() / unlockBodyScroll()
-   (Checkout, About, Auth, Edit, Feedback,
-   PostOrder...). Avec un simple booléen,
-   fermer une modale pouvait déverrouiller
-   le scroll pendant qu'une autre modale
-   était encore ouverte, ou écraser la
-   position de scroll sauvegardée.
-
-   Le compteur garantit qu'on ne
-   verrouille "pour de vrai" qu'à la
-   première ouverture, et qu'on ne
-   déverrouille "pour de vrai" que quand
-   TOUTES les modales sont fermées.
-*/
 let scrollLockCount = 0;
 
 function lockBodyScroll() {
@@ -426,7 +407,7 @@ function displayFavorites() {
   favorites.forEach(product => {
 
     container.innerHTML += `
-      <div class="product-card">
+      <div class="product-card" data-product-id="${product.id}">
 
         <button
           class="favorite-heart active"
@@ -779,17 +760,7 @@ function showFishSection() {
   }
 }
 
-/*
-  Bouton "Découvrir" dans le bandeau Africano
-  (home-section). Il appelait showCatalog(), mais
-  cette fonction n'existait nulle part dans le
-  script -> le clic ne faisait donc rien.
-  On l'ajoute ici : elle amène directement vers la
-  section Chiens (premier catalogue), exactement
-  comme les autres liens de navigation.
-*/
 function showCatalog() {
-
   showDogSection();
 }
 
@@ -1275,7 +1246,7 @@ function renderGrid(
 
     container.innerHTML += `
 
-      <div class="product-card">
+      <div class="product-card" data-product-id="${p.id}">
 
         <button
           class="favorite-heart ${favoriteActive ? "active" : ""}"
@@ -1450,6 +1421,327 @@ function showDetails(id) {
 }
 
 
+/*********************** SEARCH ***********************/
+
+/*
+  Vérifie si l'article est un animal
+*/
+function isPetItem(id) {
+
+  return (
+    dogPets.some(p => p.id === id) ||
+    catPets.some(p => p.id === id) ||
+    birdPets.some(p => p.id === id) ||
+    fishPets.some(p => p.id === id)
+  );
+}
+
+
+/*
+  Quand on clique sur une suggestion :
+
+  Exemple :
+  "Croquettes Chien Premium 3Kg"
+
+  => ouverture du groupe Chiens
+  => scroll directement vers la vraie carte
+  => aucun "Résultat de recherche"
+*/
+function showSearchResult(id) {
+
+  const product =
+    getAllItems().find(
+      p => p.id === id
+    );
+
+  if (!product) return;
+
+
+  /* Fermer la recherche */
+  const searchInput =
+    document.getElementById(
+      "search"
+    );
+
+  const suggestions =
+    document.getElementById(
+      "suggestions"
+    );
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  if (suggestions) {
+    suggestions.innerHTML = "";
+  }
+
+
+  /*
+    Déterminer dans quelle catégorie
+    se trouve le produit.
+  */
+
+  let sectionFunction = null;
+  let targetContainerId = null;
+
+  /* CHIENS */
+
+  if (
+    dogProducts.some(
+      p => p.id === id
+    ) ||
+    dogPets.some(
+      p => p.id === id
+    )
+  ) {
+
+    sectionFunction =
+      showDogSection;
+
+    targetContainerId =
+      dogProducts.some(
+        p => p.id === id
+      )
+        ? "products-dogs"
+        : "pets-dogs";
+  }
+
+
+  /* CHATS */
+
+  else if (
+    catProducts.some(
+      p => p.id === id
+    ) ||
+    catPets.some(
+      p => p.id === id
+    )
+  ) {
+
+    sectionFunction =
+      showCatSection;
+
+    targetContainerId =
+      catProducts.some(
+        p => p.id === id
+      )
+        ? "products-cats"
+        : "pets-cats";
+  }
+
+
+  /* OISEAUX */
+
+  else if (
+    birdProducts.some(
+      p => p.id === id
+    ) ||
+    birdPets.some(
+      p => p.id === id
+    )
+  ) {
+
+    sectionFunction =
+      showBirdSection;
+
+    targetContainerId =
+      birdProducts.some(
+        p => p.id === id
+      )
+        ? "products-birds"
+        : "pets-birds";
+  }
+
+
+  /* POISSONS */
+
+  else if (
+    fishProducts.some(
+      p => p.id === id
+    ) ||
+    fishPets.some(
+      p => p.id === id
+    )
+  ) {
+
+    sectionFunction =
+      showFishSection;
+
+    targetContainerId =
+      fishProducts.some(
+        p => p.id === id
+      )
+        ? "products-fishes"
+        : "pets-fishes";
+  }
+
+
+  if (
+    !sectionFunction ||
+    !targetContainerId
+  ) {
+    return;
+  }
+
+
+  /*
+    Ouvrir directement
+    la catégorie correspondante.
+  */
+
+  sectionFunction();
+
+
+  /*
+    Attendre que la section soit visible
+    puis chercher la vraie carte.
+  */
+
+  setTimeout(() => {
+
+    const container =
+      document.getElementById(
+        targetContainerId
+      );
+
+    if (!container) return;
+
+
+    const card =
+      container.querySelector(
+        `[data-product-id="${id}"]`
+      );
+
+    if (!card) return;
+
+
+    /*
+      Sur mobile les produits sont
+      horizontalement scrollables.
+
+      Sur PC, scrollIntoView fonctionne
+      normalement.
+    */
+
+    card.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center"
+    });
+
+
+    /*
+      Mettre en évidence la carte.
+    */
+
+    card.classList.add(
+      "product-highlight"
+    );
+
+
+    setTimeout(() => {
+
+      card.classList.remove(
+        "product-highlight"
+      );
+
+    }, 1800);
+
+  }, 200);
+}
+
+
+/*
+  Recherche :
+  seulement les suggestions.
+  Aucun changement automatique
+  de section pendant qu'on écrit.
+*/
+
+function searchProduct() {
+
+  const searchInput =
+    document.getElementById(
+      "search"
+    );
+
+  if (!searchInput) return;
+
+  const value =
+    searchInput.value
+      .toLowerCase()
+      .trim();
+
+  const suggestions =
+    document.getElementById(
+      "suggestions"
+    );
+
+  if (suggestions) {
+    suggestions.innerHTML = "";
+  }
+
+  if (value === "") {
+    return;
+  }
+
+  const all =
+    getAllItems();
+
+  const filtered =
+    all.filter(
+      p =>
+        p.name
+          .toLowerCase()
+          .includes(value)
+    );
+
+  if (!suggestions) return;
+
+
+  filtered.forEach(p => {
+
+    const li =
+      document.createElement(
+        "li"
+      );
+
+    li.innerText =
+      p.name;
+
+
+    /*
+      Clic sur la suggestion
+      => section originale
+      => carte originale
+    */
+
+    li.onclick = () => {
+
+      showSearchResult(
+        p.id
+      );
+
+    };
+
+    suggestions.appendChild(
+      li
+    );
+  });
+}
+
+
+/*
+  Cette fonction بقيت فقط للتوافق
+  مع أي كود قديم يستعملها.
+  ما عادش فما search-result section.
+*/
+function closeSearchResult() {
+  return;
+}
+
+
 /*********************** CART ***********************/
 
 function addToCartById(id) {
@@ -1587,6 +1879,7 @@ function renderCart() {
 
       <div
         class="product-card"
+        data-product-id="${item.id}"
         style="padding-top:45px;">
 
         <input
@@ -1820,16 +2113,8 @@ function openCheckoutModal() {
     modal.classList.remove("hidden");
   }
 
-  /*
-   IMPORTANT iPhone:
-   Bloquer le scroll de la page derrière le modal.
-  */
   lockBodyScroll();
 
-  /*
-   Donner au navigateur un petit délai
-   avant de calculer la taille de la carte.
-  */
   setTimeout(() => {
 
     initMap();
@@ -1884,10 +2169,6 @@ function initMap() {
     return;
   }
 
-  /*
-   Si la map existe déjà,
-   on ne la recrée surtout pas.
-  */
   if (!map) {
 
     try {
@@ -1935,12 +2216,6 @@ function initMap() {
       }
     );
 
-    /*
-     Empêcher certains gestes du navigateur
-     de faire bouger toute la page pendant
-     l'interaction avec la carte.
-    */
-
     if (mapElement) {
 
       mapElement.style.touchAction =
@@ -1951,12 +2226,6 @@ function initMap() {
     }
 
   } else {
-
-    /*
-     IMPORTANT sur iPhone:
-     Leaflet est parfois initialisée dans
-     un élément caché. On force le recalcul.
-    */
 
     setTimeout(() => {
 
@@ -2016,30 +2285,12 @@ function setMapMarker(
 
 /*********************** GPS MOBILE FIX ***********************/
 
-/*
-  Fonction principale GPS.
-
-  Cette version fonctionne avec:
-  - iPhone / Safari
-  - Android / Chrome
-  - HTTPS
-  - GPS précis
-  - fallback si GPS précis échoue
-  - permission refusée
-  - GPS désactivé
-  - timeout
-*/
-
 function detectGPS() {
 
   const locStatus =
     document.getElementById(
       "locationStatus"
     );
-
-  /*
-   1. Vérification HTTPS
-  */
 
   if (
     !window.isSecureContext &&
@@ -2062,10 +2313,6 @@ function detectGPS() {
     return;
   }
 
-  /*
-   2. Vérification navigateur
-  */
-
   if (
     !navigator.geolocation
   ) {
@@ -2084,19 +2331,11 @@ function detectGPS() {
     return;
   }
 
-  /*
-   3. Status
-  */
-
   if (locStatus) {
 
     locStatus.innerText =
       "⏳ Recherche de votre position...";
   }
-
-  /*
-   4. Préparer la map
-  */
 
   if (!map) {
     initMap();
@@ -2110,11 +2349,6 @@ function detectGPS() {
 
     }, 150);
   }
-
-  /*
-   5. Première tentative:
-      GPS haute précision.
-  */
 
   getGPSPositionHighAccuracy(
     function(position) {
@@ -2131,13 +2365,6 @@ function detectGPS() {
         "GPS haute précision échoué:",
         firstError
       );
-
-      /*
-       6. FALLBACK ANDROID / MOBILE
-
-       On réessaie sans haute précision.
-       C'est très important sur certains Android.
-      */
 
       if (locStatus) {
 
@@ -2165,9 +2392,6 @@ function detectGPS() {
   );
 }
 
-
-/*********************** GPS HIGH ACCURACY ***********************/
-
 function getGPSPositionHighAccuracy(
   success,
   error
@@ -2187,9 +2411,6 @@ function getGPSPositionHighAccuracy(
   );
 }
 
-
-/*********************** GPS FALLBACK ***********************/
-
 function getGPSPositionFallback(
   success,
   error
@@ -2208,9 +2429,6 @@ function getGPSPositionFallback(
     }
   );
 }
-
-
-/*********************** GPS SUCCESS ***********************/
 
 function handleGPSPosition(
   position
@@ -2248,17 +2466,9 @@ function handleGPSPosition(
     return;
   }
 
-  /*
-   Recréer/initialiser la carte si nécessaire.
-  */
-
   if (!map) {
     initMap();
   }
-
-  /*
-   Centrer la map.
-  */
 
   if (map) {
 
@@ -2273,18 +2483,10 @@ function handleGPSPosition(
     );
   }
 
-  /*
-   Ajouter marker.
-  */
-
   setMapMarker(
     lat,
     lng
   );
-
-  /*
-   Afficher résultat.
-  */
 
   const locStatus =
     document.getElementById(
@@ -2309,9 +2511,6 @@ function handleGPSPosition(
   }
 }
 
-
-/*********************** GPS ERROR ***********************/
-
 function handleGPSError(
   error
 ) {
@@ -2325,10 +2524,6 @@ function handleGPSError(
     document.getElementById(
       "locationStatus"
     );
-
-  /*
-   PERMISSION DENIED
-  */
 
   if (
     error &&
@@ -2357,10 +2552,6 @@ function handleGPSError(
     return;
   }
 
-  /*
-   POSITION UNAVAILABLE
-  */
-
   if (
     error &&
     error.code === 2
@@ -2380,10 +2571,6 @@ function handleGPSError(
 
     return;
   }
-
-  /*
-   TIMEOUT
-  */
 
   if (
     error &&
@@ -2405,10 +2592,6 @@ function handleGPSError(
 
     return;
   }
-
-  /*
-   UNKNOWN ERROR
-  */
 
   if (locStatus) {
 
@@ -2442,12 +2625,6 @@ function prepareOrderSubmission(e) {
       ? manualAddressInput.value.trim()
       : "";
 
-  /*
-   La commande peut passer avec :
-   - une position choisie sur la carte / GPS (selectedCoords)
-   - OU une adresse écrite manuellement (manualAddress)
-   Si aucune des deux n'est fournie, on bloque.
-  */
   if (!selectedCoords && !manualAddress) {
 
     alert(
@@ -2598,214 +2775,6 @@ function prepareOrderSubmission(e) {
 }
 
 
-/*********************** SEARCH ***********************/
-
-function searchProduct() {
-
-  const searchInput =
-    document.getElementById(
-      "search"
-    );
-
-  if (!searchInput) return;
-
-  const value =
-    searchInput.value
-      .toLowerCase()
-      .trim();
-
-  const suggestions =
-    document.getElementById(
-      "suggestions"
-    );
-
-  if (suggestions) {
-
-    suggestions.innerHTML =
-      "";
-  }
-
-  const sections = [
-    "home-section",
-    "chiens-section",
-    "chats-section",
-    "oiseaux-section",
-    "poissons-section"
-  ];
-
-  if (value === "") {
-
-    displayAllCatalogs();
-
-    sections.forEach(id => {
-
-      const el =
-        document.getElementById(
-          id
-        );
-
-      if (el) {
-
-        el.classList.remove(
-          "hidden"
-        );
-      }
-
-    });
-
-    return;
-  }
-
-  const all =
-    getAllItems();
-
-  const filtered =
-    all.filter(
-      p =>
-        p.name
-          .toLowerCase()
-          .includes(value)
-    );
-
-  sections.forEach(id => {
-
-    const el =
-      document.getElementById(
-        id
-      );
-
-    if (el) {
-
-      el.classList.remove(
-        "hidden"
-      );
-    }
-
-  });
-
-  renderGrid(
-    "products-dogs",
-    filtered.filter(
-      p =>
-        dogProducts.some(
-          dp => dp.id === p.id
-        )
-    ),
-    false
-  );
-
-  renderGrid(
-    "pets-dogs",
-    filtered.filter(
-      p =>
-        dogPets.some(
-          dp => dp.id === p.id
-        )
-    ),
-    true
-  );
-
-  renderGrid(
-    "products-cats",
-    filtered.filter(
-      p =>
-        catProducts.some(
-          cp => cp.id === p.id
-        )
-    ),
-    false
-  );
-
-  renderGrid(
-    "pets-cats",
-    filtered.filter(
-      p =>
-        catPets.some(
-          cp => cp.id === p.id
-        )
-    ),
-    true
-  );
-
-  renderGrid(
-    "products-birds",
-    filtered.filter(
-      p =>
-        birdProducts.some(
-          bp => bp.id === p.id
-        )
-    ),
-    false
-  );
-
-  renderGrid(
-    "pets-birds",
-    filtered.filter(
-      p =>
-        birdPets.some(
-          bp => bp.id === p.id
-        )
-    ),
-    true
-  );
-
-  renderGrid(
-    "products-fishes",
-    filtered.filter(
-      p =>
-        fishProducts.some(
-          fp => fp.id === p.id
-        )
-    ),
-    false
-  );
-
-  renderGrid(
-    "pets-fishes",
-    filtered.filter(
-      p =>
-        fishPets.some(
-          fp => fp.id === p.id
-        )
-    ),
-    true
-  );
-
-  if (suggestions) {
-
-    filtered.forEach(p => {
-
-      const li =
-        document.createElement(
-          "li"
-        );
-
-      li.innerText =
-        p.name;
-
-      li.onclick = () => {
-
-        showDetails(
-          p.id
-        );
-
-        suggestions.innerHTML =
-          "";
-
-        searchInput.value =
-          "";
-
-        displayAllCatalogs();
-      };
-
-      suggestions.appendChild(
-        li
-      );
-    });
-  }
-}
-
-
 /*********************** INIT ***********************/
 
 document.addEventListener(
@@ -2825,11 +2794,6 @@ document.addEventListener(
 
 
 /*********************** SAFETY / MOBILE ***********************/
-
-/*
-   إذا تبدلت orientation أو تبدلت
-   حجم الشاشة، نصلح حجم Leaflet.
-*/
 
 window.addEventListener(
   "resize",
@@ -2861,12 +2825,6 @@ window.addEventListener(
   }
 );
 
-
-/*
-   إذا الصفحة رجعت من background
-   على الهاتف، نصلح الخريطة.
-*/
-
 document.addEventListener(
   "visibilitychange",
   () => {
@@ -2886,10 +2844,7 @@ document.addEventListener(
 );
 
 
-/*
-   إذا المستخدم ضغط ESC
-   نسكر Checkout ونرجع scroll.
-*/
+/*********************** ESC ***********************/
 
 document.addEventListener(
   "keydown",
@@ -3030,3 +2985,9 @@ window.closeEditModal =
 
 window.saveProductChanges =
   saveProductChanges;
+
+window.showSearchResult =
+  showSearchResult;
+
+window.closeSearchResult =
+  closeSearchResult;

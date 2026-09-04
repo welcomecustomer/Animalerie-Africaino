@@ -164,6 +164,24 @@ let fishPets =
   JSON.parse(localStorage.getItem("pw_fishPets")) || defaultFishPets;
 
 
+/*********************** ADMIN CATALOG REGISTRY ***********************/
+/*
+  Rabet kol container id (fil HTML) m3a l-array eli fih el data
+  mte3ou w l-storageKey mte3 localStorage w isPet (produit wla
+  animal disponible). Yst5dem fi Ajouter (+) w Supprimer (×).
+*/
+const catalogRegistry = {
+  "products-dogs": { list: dogProducts, storageKey: "pw_dogProducts", isPet: false },
+  "pets-dogs": { list: dogPets, storageKey: "pw_dogPets", isPet: true },
+  "products-cats": { list: catProducts, storageKey: "pw_catProducts", isPet: false },
+  "pets-cats": { list: catPets, storageKey: "pw_catPets", isPet: true },
+  "products-birds": { list: birdProducts, storageKey: "pw_birdProducts", isPet: false },
+  "pets-birds": { list: birdPets, storageKey: "pw_birdPets", isPet: true },
+  "products-fishes": { list: fishProducts, storageKey: "pw_fishProducts", isPet: false },
+  "pets-fishes": { list: fishPets, storageKey: "pw_fishPets", isPet: true }
+};
+
+
 /*********************** GLOBAL VARIABLES ***********************/
 
 let cart = [];
@@ -1206,6 +1224,185 @@ function saveProductChanges(e) {
 }
 
 
+/*********************** ADMIN ADD (nouveau produit / animal) ***********************/
+
+/*
+  Y7isseb id jdid eli ma3andouch conflit m3a l-ids el mawjoudin.
+*/
+function generateNewId() {
+
+  const all =
+    getAllItems();
+
+  const maxId =
+    all.length
+      ? Math.max(
+          ...all.map(
+            p => Number(p.id) || 0
+          )
+        )
+      : 0;
+
+  return maxId + 1;
+}
+
+/*
+  Y7el l-modal "Ajouter" w yodhbot l-container eli
+  el card el jdida bech tzid fih (methlan "pets-dogs"
+  wla "products-cats"...).
+*/
+function openAddModal(containerId) {
+
+  const entry =
+    catalogRegistry[containerId];
+
+  if (!entry) return;
+
+  const targetInput =
+    document.getElementById(
+      "addTargetContainer"
+    );
+
+  if (targetInput) {
+    targetInput.value = containerId;
+  }
+
+  const title =
+    document.getElementById(
+      "addModalTitle"
+    );
+
+  if (title) {
+
+    title.innerText =
+      entry.isPet
+        ? "Ajouter un Animal Disponible ➕"
+        : "Ajouter un Produit ➕";
+  }
+
+  const form =
+    document.getElementById(
+      "addProductForm"
+    );
+
+  if (form) {
+    form.reset();
+  }
+
+  document
+    .getElementById("addProductModal")
+    .classList.remove("hidden");
+
+  lockBodyScroll();
+}
+
+function closeAddModal() {
+
+  document
+    .getElementById("addProductModal")
+    .classList.add("hidden");
+
+  unlockBodyScroll();
+}
+
+function saveNewProduct(e) {
+
+  e.preventDefault();
+
+  const containerId =
+    document.getElementById(
+      "addTargetContainer"
+    ).value;
+
+  const entry =
+    catalogRegistry[containerId];
+
+  if (!entry) return;
+
+  const newName =
+    document.getElementById(
+      "addProductName"
+    ).value;
+
+  const newPrice =
+    document.getElementById(
+      "addProductPrice"
+    ).value;
+
+  const newImg =
+    document.getElementById(
+      "addProductImg"
+    ).value;
+
+  const newDesc =
+    document.getElementById(
+      "addProductDesc"
+    ).value;
+
+  const newItem = {
+    id: generateNewId(),
+    name: newName,
+    price: newPrice,
+    img: newImg,
+    desc: newDesc
+  };
+
+  entry.list.push(newItem);
+
+  localStorage.setItem(
+    entry.storageKey,
+    JSON.stringify(entry.list)
+  );
+
+  alert(
+    "Ajouté avec succès ! 🎉"
+  );
+
+  closeAddModal();
+  displayAllCatalogs();
+}
+
+/*
+  Yn7i case (produit wla animal) mel array w mel
+  localStorage. y5dem m3a azzrar (×) fou9 3al ymin
+  kol case, w visible ken lil admin.
+*/
+function deleteProductItem(containerId, id, event) {
+
+  if (event) {
+    event.stopPropagation();
+  }
+
+  const entry =
+    catalogRegistry[containerId];
+
+  if (!entry) return;
+
+  const confirmDelete =
+    confirm(
+      "Voulez-vous vraiment supprimer cet article ?"
+    );
+
+  if (!confirmDelete) return;
+
+  const idx =
+    entry.list.findIndex(
+      p => p.id === id
+    );
+
+  if (idx === -1) return;
+
+  entry.list.splice(idx, 1);
+
+  localStorage.setItem(
+    entry.storageKey,
+    JSON.stringify(entry.list)
+  );
+
+  displayAllCatalogs();
+}
+
+
 /*********************** CATALOGS ***********************/
 
 function renderGrid(
@@ -1223,6 +1420,9 @@ function renderGrid(
 
   container.innerHTML = "";
 
+  const adminMode =
+    isAdmin();
+
   list.forEach(p => {
 
     const actionBtnText =
@@ -1234,7 +1434,7 @@ function renderGrid(
       isFavorite(p.id);
 
     const adminEditBtn =
-      isAdmin()
+      adminMode
         ? `
           <button
             class="btn btn-outline admin-edit-btn"
@@ -1244,9 +1444,23 @@ function renderGrid(
         `
         : "";
 
+    const adminDeleteBtn =
+      adminMode
+        ? `
+          <button
+            class="admin-delete-btn"
+            onclick="deleteProductItem('${containerId}', ${p.id}, event)"
+            title="Supprimer">
+            ×
+          </button>
+        `
+        : "";
+
     container.innerHTML += `
 
       <div class="product-card" data-product-id="${p.id}">
+
+        ${adminDeleteBtn}
 
         <button
           class="favorite-heart ${favoriteActive ? "active" : ""}"
@@ -1296,6 +1510,43 @@ function renderGrid(
       </div>
     `;
   });
+
+  /*
+    ADMIN: case "+" el khadra fi l5er el sf (fil ymin
+    kif na3mlou scroll). Tal9aha kif t9ass tzid case
+    jdida (produit wla animal disponible) l-had l-section.
+  */
+  if (
+    adminMode &&
+    catalogRegistry[containerId]
+  ) {
+
+    const addLabel =
+      isPet
+        ? "Ajouter un animal"
+        : "Ajouter un produit";
+
+    container.innerHTML += `
+
+      <div
+        class="product-card add-product-card"
+        onclick="openAddModal('${containerId}')">
+
+        <div class="add-card-inner">
+
+          <div class="add-plus-icon">
+            +
+          </div>
+
+          <p>
+            ${addLabel}
+          </p>
+
+        </div>
+
+      </div>
+    `;
+  }
 
   updateFavoriteHearts();
 }
@@ -2991,3 +3242,15 @@ window.showSearchResult =
 
 window.closeSearchResult =
   closeSearchResult;
+
+window.openAddModal =
+  openAddModal;
+
+window.closeAddModal =
+  closeAddModal;
+
+window.saveNewProduct =
+  saveNewProduct;
+
+window.deleteProductItem =
+  deleteProductItem;

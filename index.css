@@ -1406,3 +1406,78 @@
   40%  { box-shadow: 0 0 0 12px rgba(16,185,129,0); }
   100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
 }
+
+/* =========================================================
+   ADMIN: بطاقة "أضف" (+) الخضراء في آخر كل سطر (Chiens/Chats/
+   Oiseaux/Poissons، Produits w Disponibles) — تظهر فقط لل admin
+   وكي تعمل scroll لل يمين تلقاها آخر واحدة، تحل formulaire
+   باش تزيد case جديدة (produit wla animal disponible)
+   ========================================================= */
+.add-product-card {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px dashed var(--accent) !important;
+  background: rgba(16, 185, 129, 0.06) !important;
+  min-height: 250px;
+}
+
+.add-product-card:hover {
+  background: rgba(16, 185, 129, 0.16) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px var(--accent-glow);
+}
+
+.add-card-inner {
+  text-align: center;
+  pointer-events: none;
+}
+
+.add-plus-icon {
+  font-size: 46px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.add-card-inner p {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ADMIN: زر الحذف (×) فوق على اليسار فوق كل case */
+.admin-delete-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.85);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 11;
+  transition: all 0.25s ease;
+}
+
+.admin-delete-btn:hover {
+  transform: scale(1.15);
+  background: #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+/* ADMIN edit button: éviter le chevauchement avec le bouton × */
+.admin-edit-btn {
+  margin-top: 4px;
+}

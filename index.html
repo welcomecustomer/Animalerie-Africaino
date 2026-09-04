@@ -498,6 +498,43 @@
   </div>
 
 
+  <!-- ==================== MODAL ADD PRODUCT (ADMIN FEDY) ==================== -->
+  <div id="addProductModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 450px;">
+      <span class="close-btn" onclick="closeAddModal()">&times;</span>
+      <h2 id="addModalTitle" style="margin-bottom: 15px; color: var(--accent); text-align: center;">Ajouter un Produit ➕</h2>
+
+      <form id="addProductForm" onsubmit="saveNewProduct(event)">
+        <input type="hidden" id="addTargetContainer">
+
+        <div class="form-group">
+          <label>Nom du produit</label>
+          <input type="text" id="addProductName" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);">
+        </div>
+
+        <div class="form-group">
+          <label>Prix (ex: 45 ou "***")</label>
+          <input type="text" id="addProductPrice" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);">
+        </div>
+
+        <div class="form-group">
+          <label>Lien de l'image (URL)</label>
+          <input type="url" id="addProductImg" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);">
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="addProductDesc" rows="3" required style="width:100%; padding:10px; border-radius:10px; background:rgba(0,0,0,0.5); color:#fff; border:1px solid var(--border-color);"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-large" style="margin-top: 10px;">
+          Ajouter le produit ➕
+        </button>
+      </form>
+    </div>
+  </div>
+
+
   <!-- ==================== MODAL CHECKOUT & MAP ==================== -->
   <div id="checkoutModal" class="modal hidden">
     <div class="modal-content" style="max-width: 500px;">
